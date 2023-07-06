@@ -8,3 +8,7 @@ captures
 .cxx
 local.properties
 xcuserdata
+
+sopy/build
+sopy/build/**
+/sopy/build/**
