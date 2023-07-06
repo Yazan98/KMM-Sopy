@@ -12,6 +12,15 @@ import io.ktor.utils.io.ByteReadChannel
 import kotlinx.serialization.json.Json
 import kotlin.reflect.KClass
 
+/**
+ * This Class has the Base Code Implementation for All Api Requests in any App
+ * This one Check on Response Status, HttpClient, and DeSerialize the Response,
+ * Mainly No Direct Access to This Class by Clients
+ *
+ * If Clients Need to Use This Class Use
+ * 1. SopyOneRequest
+ * 2. SopyCrudRequest
+ */
 abstract class SopyRequestManager {
 
     protected var httpClient: HttpClient? = null
