@@ -46,11 +46,31 @@ No Logic on UI or ViewModel Level, the Whole Logic Should be Inside UseCases and
 2. SopyLegacyHttpBaseClient: Ktor Darwin Legacy: Arm32 Only
 
 ## Library Builds Details
-Library Builds Available to Download on Android, IOS by Build Files
 
 > Builds Location in Releases Tab
+
+Library Builds Available to Download on Android, IOS by Build Files
 
 1. Android Builds .aar File (Debug, Release) Available
 2. IOS Builds .zip Available for All Supported Architectures (Debug, Release)
 
+## Library Gradle Installation
+
+```
+dependencies {
+
+    // Common Main
+    implementation "com.yazantarifi:sopy:1.0.0"
+    
+    // Android
+    implementation "com.yazantarifi:sopy-android:1.0.0"
+    implementation "com.yazantarifi:sopy-android-debug:1.0.0"
+    
+    // IOS
+    implementation "com.yazantarifi:sopy-iosx64:1.0.0"
+    implementation "com.yazantarifi:sopy-iossimulatorarm64:1.0.0"
+    implementation "com.yazantarifi:sopy-iosarm64:1.0.0"
+    implementation "com.yazantarifi:sopy-iosarm32:1.0.0"
+}
+```
 
