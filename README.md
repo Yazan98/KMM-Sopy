@@ -7,6 +7,11 @@ A Kotlin Multiplatform Mobile library to Share Utility Classes between Android, 
 This Library Share Common Parts between Android and IOS Applications and the Idea of this Library is to Control the Applications from UseCases and Domain Layer
 No Logic on UI or ViewModel Level, the Whole Logic Should be Inside UseCases and for Api Part Sopy Use Ktor Client as a Http Client
 
+## Library Objective
+
+The Main Idea of this Library is to Build common Implementation of the Domain Layer between Android, IOS Apps
+and Share Same Logic by UseCases, in Sopy the UseCases are the Start Point in each Feature
+
 ## Supported Platforms
 1. Android
 2. IOS (Darwin, Legacy Darwin)
@@ -40,21 +45,65 @@ Library Builds Available to Download on Android, IOS by Build Files
 
 ## Library Gradle Installation
 
+1. Dependencies Details
 ```
 dependencies {
 
     // Common Main
-    implementation "com.yazantarifi:sopy:1.0.0"
+    implementation "com.yazantarifi:sopy:1.0.1"
     
     // Android
-    implementation "com.yazantarifi:sopy-android:1.0.0"
+    implementation "com.yazantarifi:sopy-android:1.0.1"
     
     // IOS
-    implementation "com.yazantarifi:sopy-iosx64:1.0.0"
-    implementation "com.yazantarifi:sopy-iossimulatorarm64:1.0.0"
-    implementation "com.yazantarifi:sopy-iosarm64:1.0.0"
-    implementation "com.yazantarifi:sopy-iosarm32:1.0.0"
+    implementation "com.yazantarifi:sopy-iosx64:1.0.1"
+    implementation "com.yazantarifi:sopy-iosarm64:1.0.1"
+    implementation "com.yazantarifi:sopy-iosarm32:1.0.1"
 }
+```
+
+2. KMM Apps Details
+
+```
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("com.yazantarifi:sopy:1.0.1")
+            }
+        }
+
+        val androidMain by getting {
+            dependencies {
+                implementation("com.yazantarifi:sopy-android:1.0.1")
+            }
+        }
+
+        val iosX64Main by getting {
+            dependencies {
+                implementation("com.yazantarifi:sopy-iosx64:1.0.1")
+            }
+        }
+        
+        val iosArm64Main by getting {
+            dependencies {
+                implementation("com.yazantarifi:sopy-iosarm64:1.0.1")
+            }
+        }
+        
+        val iosSimulatorArm64Main by getting
+        val iosMain by creating {
+            dependencies {
+                implementation("io.ktor:ktor-client-ios:2.2.1")
+                implementation("io.ktor:ktor-client-darwin:2.2.1")
+            }
+
+            dependsOn(commonMain)
+            iosX64Main.dependsOn(this)
+            iosArm64Main.dependsOn(this)
+            iosSimulatorArm64Main.dependsOn(this)
+        }
+    }
+
 ```
 
 ## Classes Description
