@@ -48,7 +48,6 @@ dependencies {
     
     // Android
     implementation "com.yazantarifi:sopy-android:1.0.0"
-    implementation "com.yazantarifi:sopy-android-debug:1.0.0"
     
     // IOS
     implementation "com.yazantarifi:sopy-iosx64:1.0.0"

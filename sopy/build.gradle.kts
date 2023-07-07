@@ -10,13 +10,13 @@ plugins {
 }
 
 group = "com.yazantarifi"
-version = "1.0.0"
+version = "1.0.1"
 
 kotlin {
 
     // Android Configurations
     android {
-        publishLibraryVariants("release", "debug")
+        publishLibraryVariants("release")
         compilations.all {
             kotlinOptions {
                 jvmTarget = "17"

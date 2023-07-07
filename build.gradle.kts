@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "com.yazantarifi"
-version = "1.0.0"
+version = "1.0.1"
 
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
