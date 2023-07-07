@@ -1,11 +1,17 @@
 package com.yazantarifi.kmm.sopy.context
 
+import kotlinx.cinterop.UnsafeNumber
 import platform.Foundation.NSUserDefaults
+import platform.darwin.NSInteger
 
+@OptIn(UnsafeNumber::class)
 actual fun SopyContext.putInt(key: String, value: Int) {
-    NSUserDefaults.standardUserDefaults.setInteger(value.toLong(), key)
+    (value as NSInteger)?.let {
+        NSUserDefaults.standardUserDefaults.setInteger(it, key)
+    }
 }
 
+@OptIn(UnsafeNumber::class)
 actual fun SopyContext.getInt(key: String, default: Int): Int {
     return NSUserDefaults.standardUserDefaults.integerForKey(key).toInt()
 }

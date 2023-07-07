@@ -2,6 +2,7 @@ package com.yazantarifi.kmm.sopy
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
+import io.ktor.client.engine.darwin.DarwinLegacy
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -19,9 +20,8 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-actual class SopyHttpBaseClient {
-
-    actual val httpClient: HttpClient = HttpClient(Darwin) {
+class SopyLegacyHttpBaseClient() {
+    val httpClient: HttpClient = HttpClient(DarwinLegacy) {
         engine {
             configureRequest {
                 setAllowsCellularAccess(true)
