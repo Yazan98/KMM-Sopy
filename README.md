@@ -40,7 +40,8 @@ No Logic on UI or ViewModel Level, the Whole Logic Should be Inside UseCases and
 9. SopyApplicationConfigurations: Application Configurations and General Configs : Registered in App Delegate and Application Scope Only
 10. SopyBaseViewModel: Base ViewModels Implementation (IOS Only)
 
-> Ktor IOS Specific Implementation
+
+## Ktor IOS Specific Implementation
 1. SopyHttpBaseClient: Ktor Darwin Engine : x64, Arm64
 2. SopyLegacyHttpBaseClient: Ktor Darwin Legacy: Arm32 Only
 

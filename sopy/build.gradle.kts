@@ -4,6 +4,9 @@ import com.android.build.gradle.tasks.GenerateBuildConfig
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("signing")
+    id("org.gradle.maven-publish")
+    id("org.jetbrains.dokka") version "1.4.20"
 }
 
 group = "com.yazantarifi"
@@ -99,3 +102,54 @@ android {
     }
 }
 
+val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    dependsOn(dokkaHtml)
+    archiveClassifier.set("javadoc")
+    from(dokkaHtml.outputDirectory)
+}
+
+publishing {
+    repositories.maven("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        name = "OSSRH"
+
+        credentials {
+            username = ""
+            password = ""
+        }
+    }
+
+    publications.withType<MavenPublication> {
+        artifact(javadocJar)
+        pom {
+            name.set("Sopy")
+            description.set("Utility Classes, Android, IOS")
+            url.set("https://github.com/Yazan98/Sopy")
+            licenses {
+                license {
+                    name.set("MIT")
+                    url.set("https://github.com/Yazan98/Sopy/blob/main/LICENSE")
+                    distribution.set("repo")
+                }
+            }
+
+            developers {
+                developer {
+                    id.set("Yazan98")
+                    name.set("Yazan Tarifi")
+                }
+            }
+
+            scm {
+                connection.set("scm:git:ssh://github.com/Yazan98/Sopy.git")
+                developerConnection.set("scm:git:ssh://github.com/Yazan98/Sopy.git")
+                url.set("https://github.com/Yazan98/Sopy")
+            }
+        }
+        the<SigningExtension>().sign(this)
+    }
+}
+
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    dependsOn(tasks.withType<Sign>())
+}
