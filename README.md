@@ -134,18 +134,6 @@ class GetHomeScreenItemsUseCase constructor(): SopyUseCase<GetHomeScreenItemsUse
         SpotifyFeaturedPlaylistsApiRequest()
     }
 
-    private val newReleasesApiClient: SpotifyNewAlbumsReleasesApiRequest by lazy {
-        SpotifyNewAlbumsReleasesApiRequest()
-    }
-
-    private val categoriesApiClient: SpotifyGetCategoriesApiRequest by lazy {
-        SpotifyGetCategoriesApiRequest(false)
-    }
-
-    private val playlistsCategoryApiClient: SpotifyGetCategoryPlaylistApiRequest by lazy {
-        SpotifyGetCategoryPlaylistApiRequest()
-    }
-
     override fun isConstraintsSupported(): Boolean {
         return false
     }
@@ -201,152 +189,9 @@ class GetHomeScreenItemsUseCase constructor(): SopyUseCase<GetHomeScreenItemsUse
             })
         }
 
-        if (newReleasesApiClient.isRequestListenerAttachNeeded()) {
-            newReleasesApiClient.addHttpClient(getHttpClientInstance())
-            newReleasesApiClient.addRequestListener(object :
-                SopyRequestListener<SpotifyAlbumsResponse> {
-                override fun onSuccess(responseValue: SpotifyAlbumsResponse) {
-                    val albums = ArrayList<RadioAlbum>()
-                    responseValue.albums?.items?.let {
-                        albums.addAll(it.map { album ->
-                            var imageUrl: String = ""
-                            album.images?.get(0)?.let {
-                                imageUrl = it.url ?: ""
-                            }
-
-                            RadioAlbum(
-                                id = album.id ?: "",
-                                name = album.name ?: "",
-                                image = imageUrl ?: "",
-                                releaseDate = album.releaseDate ?: "",
-                                numberOfTracks = album.numberOfTracks ?: 0,
-                                artists = album.artists?.map { it.name ?: "" } ?: arrayListOf(),
-                                loadingMessage = RadioApplicationMessages.getMessage("loading_image"),
-                            )
-                        })
-                    }
-
-                    screenItems.add(HomeAlbumsItem(
-                        RadioApplicationMessages.getMessage("albums"),
-                        RadioApplicationMessages.getMessage("loading_image"),
-                        albums
-                    ))
-                }
-
-                override fun onError(error: Throwable) {
-                    // Will Not Show the Item
-                }
-            })
-        }
-
-        if (categoriesApiClient.isRequestListenerAttachNeeded()) {
-            categoriesApiClient.addHttpClient(getHttpClientInstance())
-            categoriesApiClient.addRequestListener(object :
-                SopyRequestListener<SpotifyCategoriesResponse> {
-                override fun onSuccess(responseValue: SpotifyCategoriesResponse) {
-                    val categories = ArrayList<RadioCategoryItem>()
-                    responseValue.categories?.items?.let {
-                        categories.addAll(it.map {
-                            var imageUrl: String = ""
-                            it.icons?.get(0)?.let {
-                                imageUrl = it.url ?: ""
-                            }
-
-                            RadioCategoryItem(
-                                it.id ?: "",
-                                it.name ?: "",
-                                imageUrl,
-                                RadioApplicationMessages.getMessage("loading_image")
-                            )
-                        })
-                    }
-
-                    screenItems.add(HomeCategoriesItem(
-                        RadioApplicationMessages.getMessage("categories"),
-                        RadioApplicationMessages.getMessage("loading_image"),
-                        categories
-                    ))
-                }
-
-                override fun onError(error: Throwable) {
-                    // Will Not Show the Item
-                }
-            })
-        }
-
-        if (playlistsCategoryApiClient.isRequestListenerAttachNeeded()) {
-            playlistsCategoryApiClient.addHttpClient(getHttpClientInstance())
-            playlistsCategoryApiClient.addRequestListener(object :
-                SopyRequestListener<SpotifyFeaturedPlaylistsResponse> {
-                override fun onSuccess(responseValue: SpotifyFeaturedPlaylistsResponse) {
-                    val playlists = ArrayList<RadioPlaylist>()
-                    responseValue.playlists?.items?.let {
-                        playlists.addAll(it.map {  playlist ->
-                            var imageUrl: String = ""
-                            playlist.images?.forEach {
-                                imageUrl = it.url ?: ""
-                            }
-
-                            RadioPlaylist(
-                                id = playlist.id ?: "",
-                                image = imageUrl,
-                                name = playlist.name ?: "",
-                                ownerName = playlist.owner?.name,
-                                numberOfTracks = playlist.tracks?.total ?: 0,
-                                RadioApplicationMessages.getMessage("loading_image")
-                            )
-                        })
-                    }
-
-                    screenItems.add(HomePlaylistsItem(
-                        responseValue.sectionName ?: "",
-                        RadioApplicationMessages.getMessage("loading_image"),
-                        playlists
-                    ))
-                }
-
-                override fun onError(error: Throwable) {
-                    // Will Not Show the Item
-                }
-            })
-        }
-
-        val headers = SpotifyApiHeadersBuilder.getApplicationBearerTokenHeaders(requestValue.token)
-        featuredListApiClient.executeRequest(Unit, headers)
-        newReleasesApiClient.executeRequest(Unit, headers)
-        categoriesApiClient.executeRequest(Unit, headers)
-
-        if (requestValue.isNotificationPermissionShouldShow) {
-            screenItems.add(HomeNotificationPermissionItem(
-                true,
-                RadioApplicationMessages.getMessage("notification_permission_warning_message"),
-                RadioApplicationMessages.getMessage("notification_permission_title"),
-                "",
-                RadioApplicationMessages.getMessage("notification_permission_message"),
-                RadioApplicationMessages.getMessage("notification_permission_enable"),
-                RadioApplicationMessages.getMessage("notification_permission_disable"),
-                requestValue.isNotificationsEnabled
-            ))
-        }
-
         playlistsCategoryApiClient.executeRequest(SpotifyGetCategoryPlaylistApiRequest.RequestParams(
             RadioApplicationMessages.getMessage("top_pop"),
             "0JQ5DAqbMKFEC4WFtoNRpw"
-        ), headers)
-
-        playlistsCategoryApiClient.executeRequest(SpotifyGetCategoryPlaylistApiRequest.RequestParams(
-            RadioApplicationMessages.getMessage("top_mood"),
-            "0JQ5DAqbMKFzHmL4tf05da"
-        ), headers)
-
-        playlistsCategoryApiClient.executeRequest(SpotifyGetCategoryPlaylistApiRequest.RequestParams(
-            RadioApplicationMessages.getMessage("top_gaming"),
-            "0JQ5DAqbMKFCfObibaOZbv"
-        ), headers)
-
-        playlistsCategoryApiClient.executeRequest(SpotifyGetCategoryPlaylistApiRequest.RequestParams(
-            RadioApplicationMessages.getMessage("top_workout"),
-            "0JQ5DAqbMKFAXlCG6QvYQ4"
         ), headers)
 
         screenItems.add(HomeOpenSpotifyAppItem(
@@ -368,9 +213,6 @@ class GetHomeScreenItemsUseCase constructor(): SopyUseCase<GetHomeScreenItemsUse
     override fun clear() {
         super.clear()
         featuredListApiClient.clear()
-        newReleasesApiClient.clear()
-        categoriesApiClient.clear()
-        playlistsCategoryApiClient.clear()
     }
 }
 ```
@@ -453,27 +295,6 @@ class HomeViewModel @Inject constructor(
                             is SopyErrorState -> errorMessageListener.value = newState.exception.message ?: ""
                             is SopySuccessState -> (newState.payload as? List<RadioCategoryItem>)?.let {
                                 categoriesListListener.value.addAll(it)
-                            }
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-    private fun onGetAccountInfo() {
-        if (accountInfoListListener.value.isNotEmpty()) return
-        accountInfoUseCase.execute(
-            storageProvider.getAccessToken(),
-            object : SopyUseCaseListener {
-                override fun onStateUpdated(newState: SopyState) {
-                    scope.launch(Dispatchers.Main) {
-                        when (newState) {
-                            is SopyEmptyState -> {}
-                            is SopyLoadingState -> accountLoadingListener.value = newState.isLoading
-                            is SopyErrorState -> errorMessageListener.value = newState.exception.message ?: ""
-                            is SopySuccessState -> (newState.payload as? List<RadioAccountItem>)?.let {
-                                accountInfoListListener.value.addAll(it)
                             }
                         }
                     }
